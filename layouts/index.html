@@ -6,6 +6,80 @@
   <title>{{ .Title }}</title>
 </head>
 <body>
-  {{ .Content }}
+
+<div class="container">
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-name">{{ .Title }}</a>
+    <ul class="nav-links">
+      <li><a href="#projects">projects</a></li>
+      <li><a href="#writing">writing</a></li>
+      <li><a href="#about">about</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-label">{{ .Params.label }}</p>
+    <h1>{{ .Params.headline }}</h1>
+    <p class="hero-bio">{{ .Params.bio }}</p>
+    <div class="hero-links">
+      <a href="{{ .Params.github }}" class="btn btn-primary">github</a>
+      <a href="{{ .Params.resume }}" class="btn btn-ghost">resume.pdf</a>
+      <a href="{{ .Params.linkedin }}" class="btn btn-ghost">linkedin</a>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Projects</h2>
+    </div>
+
+    {{ range sort (where .Site.RegularPages "Section" "projects") "Weight" }}
+    <div class="project">
+      <div class="project-top">
+        <a href="{{ .Params.url }}" class="project-name">{{ .Title }}</a>
+        <span class="project-lang">{{ .Params.lang }}</span>
+      </div>
+      <p class="project-desc">{{ .Params.description }}</p>
+      <div class="project-tags">
+        {{ range .Params.tags }}
+        <span class="tag">{{ . }}</span>
+        {{ end }}
+      </div>
+    </div>
+    {{ end }}
+  </section>
+
+  <!-- WRITING -->
+  <section id="writing">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Writing</h2>
+    </div>
+
+    {{ range sort (where .Site.RegularPages "Section" "writing") "Date" "desc" }}
+    <a href="{{ .Params.url }}" class="post">
+      <span class="post-title">{{ .Title }}</span>
+      <span class="post-meta">{{ if .Params.status }}{{ .Params.status }}{{ else }}{{ .Date.Format "Jan 2006" }}{{ end }}</span>
+    </a>
+    {{ end }}
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-copy">robin vidal, 2025</span>
+    <div class="footer-links">
+      <a href="{{ .Params.github }}">github</a>
+      <a href="{{ .Params.linkedin }}">linkedin</a>
+      <a href="#">mail</a>
+    </div>
+  </footer>
+
+</div>
+
 </body>
 </html>
