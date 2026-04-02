@@ -4,6 +4,331 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ .Title }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream:       #F4EFE4;
+      --cream-dark:  #E8E0CE;
+      --cream-mid:   #EDE6D6;
+      --khaki:       #6B6B3A;
+      --khaki-light: #8E8E52;
+      --khaki-dark:  #4A4A28;
+      --ink:         #252519;
+      --ink-muted:   #5C5C48;
+      --border:      #D4CBAF;
+
+      --font-serif: 'Lora', Georgia, serif;
+      --font-mono:  'IBM Plex Mono', monospace;
+      --font-sans:  'IBM Plex Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-weight: 300;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* NAV */
+    nav {
+      padding: 2.5rem 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-name {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: lowercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--khaki); }
+
+    /* HERO */
+    .hero {
+      padding: 6rem 0 5rem;
+      border-top: none;
+    }
+
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--khaki-light);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .hero-label::before {
+      content: '';
+      display: inline-block;
+      width: 2rem;
+      height: 1px;
+      background: var(--khaki-light);
+    }
+
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-bio {
+      font-size: 1rem;
+      color: var(--ink-muted);
+      max-width: 520px;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--khaki);
+      color: var(--cream);
+      border: 1px solid var(--khaki);
+    }
+
+    .btn-primary:hover {
+      background: var(--khaki-dark);
+      border-color: var(--khaki-dark);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--khaki-light);
+      color: var(--khaki);
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 4rem 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--khaki-light);
+      letter-spacing: 0.1em;
+    }
+
+    /* PROJECTS */
+    .project {
+      padding: 1.75rem 0;
+      border-bottom: 1px solid var(--cream-dark);
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .project:last-child { border-bottom: none; }
+
+    .project-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+    }
+
+    .project-name {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--khaki-dark);
+      text-decoration: none;
+    }
+
+    .project-name:hover { color: var(--khaki-light); }
+
+    .project-lang {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--ink-muted);
+      letter-spacing: 0.06em;
+    }
+
+    .project-desc {
+      font-size: 0.92rem;
+      color: var(--ink-muted);
+      line-height: 1.65;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      padding: 0.2rem 0.55rem;
+      background: var(--cream-mid);
+      border: 1px solid var(--border);
+      color: var(--ink-muted);
+      border-radius: 2px;
+    }
+
+    /* WRITING */
+    .post {
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--cream-dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 2rem;
+      text-decoration: none;
+      color: inherit;
+      transition: opacity 0.2s;
+    }
+
+    .post:last-child { border-bottom: none; }
+    .post:hover { opacity: 0.7; }
+
+    .post-title {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      color: var(--ink);
+    }
+
+    .post-meta {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--ink-muted);
+      white-space: nowrap;
+      letter-spacing: 0.04em;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 3rem 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--ink-muted);
+      letter-spacing: 0.04em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--ink-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--khaki); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-label { animation: fadeUp 0.5s ease both; }
+    .hero h1    { animation: fadeUp 0.5s 0.1s ease both; }
+    .hero-bio   { animation: fadeUp 0.5s 0.2s ease both; }
+    .hero-links { animation: fadeUp 0.5s 0.3s ease both; }
+  </style>
 </head>
 <body>
 
@@ -15,7 +340,6 @@
     <ul class="nav-links">
       <li><a href="#projects">projects</a></li>
       <li><a href="#writing">writing</a></li>
-      <li><a href="#about">about</a></li>
     </ul>
   </nav>
 
@@ -26,7 +350,7 @@
     <p class="hero-bio">{{ .Params.bio }}</p>
     <div class="hero-links">
       <a href="{{ .Params.github }}" class="btn btn-primary">github</a>
-      <a href="{{ .Params.resume }}" class="btn btn-ghost">resume.pdf</a>
+      <a href="{{ .Params.resume }}" class="btn btn-ghost">resume</a>
       <a href="{{ .Params.linkedin }}" class="btn btn-ghost">linkedin</a>
     </div>
   </section>
@@ -34,7 +358,6 @@
   <!-- PROJECTS -->
   <section id="projects">
     <div class="section-header">
-      <span class="section-num">01</span>
       <h2 class="section-title">Projects</h2>
     </div>
 
@@ -57,7 +380,6 @@
   <!-- WRITING -->
   <section id="writing">
     <div class="section-header">
-      <span class="section-num">02</span>
       <h2 class="section-title">Writing</h2>
     </div>
 
@@ -71,11 +393,11 @@
 
   <!-- FOOTER -->
   <footer>
-    <span class="footer-copy">robin vidal, 2025</span>
+    <span class="footer-copy">robin vidal, 2026</span>
     <div class="footer-links">
       <a href="{{ .Params.github }}">github</a>
       <a href="{{ .Params.linkedin }}">linkedin</a>
-      <a href="#">mail</a>
+      <a href="robin.vidal.pro@gmail.com">mail</a>
     </div>
   </footer>
 
