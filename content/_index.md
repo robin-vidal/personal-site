@@ -4,8 +4,9 @@ draft = false
 
 [params]
   label = 'Software Engineer'
-  headline = 'Building systems that hold under pressure.'
-  bio = "CS student at EPITA Paris. I build systems from scratch: container runtimes, distributed KV stores, and open-source infrastructure tooling. Interested in systems engineering at scale."
+  headline = 'Building systems'
+  headline_em = 'that hold under pressure.'
+  bio = "Software Engineer building systems from scratch in Go and C. Container runtimes, distributed stores, and open-source Kubernetes tooling. EPITA student."
   github = 'https://github.com/robin-vidal'
   resume = 'resume.pdf'
   linkedin = 'https://www.linkedin.com/in/robin-vidal-jml/'

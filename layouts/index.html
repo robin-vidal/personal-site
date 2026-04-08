@@ -4,23 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ .Title }}</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
   <style>
     :root {
-      --cream:       #F4EFE4;
-      --cream-dark:  #E8E0CE;
-      --cream-mid:   #EDE6D6;
-      --khaki:       #6B6B3A;
-      --khaki-light: #8E8E52;
-      --khaki-dark:  #4A4A28;
-      --ink:         #252519;
-      --ink-muted:   #5C5C48;
-      --border:      #D4CBAF;
+      /* 60 — fond froid */
+      --bg:          #F2F2EF;
+      --bg-card:     #EBEBE8;
+      --bg-subtle:   #E6E6E3;
+
+      /* 30 — structure */
+      --ink:         #2C3E50;
+      --ink-muted:   #4A5568;
+      --ink-faint:   #718096;
+      --border:      #D4D4CF;
+      --border-soft: #E0E0DC;
+
+      /* 10 — accent ardoise */
+      --blue:        #4A7FA5;
+      --blue-hover:  #3A6A8E;
+      --blue-bg:     #EBF2F7;
+      --blue-border: #BDD4E4;
 
       --font-serif: 'Lora', Georgia, serif;
       --font-mono:  'IBM Plex Mono', monospace;
       --font-sans:  'IBM Plex Sans', sans-serif;
+
+      --radius:      4px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,7 +40,7 @@
     html { scroll-behavior: smooth; }
 
     body {
-      background: var(--cream);
+      background: var(--bg);
       color: var(--ink);
       font-family: var(--font-sans);
       font-weight: 300;
@@ -81,14 +93,14 @@
     .nav-links a {
       font-family: var(--font-mono);
       font-size: 0.75rem;
-      color: var(--ink-muted);
+      color: var(--ink-faint);
       text-decoration: none;
       letter-spacing: 0.08em;
       text-transform: lowercase;
       transition: color 0.2s;
     }
 
-    .nav-links a:hover { color: var(--khaki); }
+    .nav-links a:hover { color: var(--blue); }
 
     /* HERO */
     .hero {
@@ -99,21 +111,13 @@
     .hero-label {
       font-family: var(--font-mono);
       font-size: 0.72rem;
-      color: var(--khaki-light);
+      color: var(--blue);
       letter-spacing: 0.12em;
       text-transform: uppercase;
       margin-bottom: 1.5rem;
       display: flex;
       align-items: center;
       gap: 0.75rem;
-    }
-
-    .hero-label::before {
-      content: '';
-      display: inline-block;
-      width: 2rem;
-      height: 1px;
-      background: var(--khaki-light);
     }
 
     .hero h1 {
@@ -124,6 +128,12 @@
       color: var(--ink);
       margin-bottom: 1.5rem;
       letter-spacing: -0.02em;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--ink-muted);
     }
 
     .hero-bio {
@@ -151,14 +161,14 @@
     }
 
     .btn-primary {
-      background: var(--khaki);
-      color: var(--cream);
-      border: 1px solid var(--khaki);
+      background: var(--blue);
+      color: var(--bg);
+      border: 1px solid var(--blue);
     }
 
     .btn-primary:hover {
-      background: var(--khaki-dark);
-      border-color: var(--khaki-dark);
+      background: var(--blue-hover);
+      border-color: var(--blue-hover);
     }
 
     .btn-ghost {
@@ -168,8 +178,8 @@
     }
 
     .btn-ghost:hover {
-      border-color: var(--khaki-light);
-      color: var(--khaki);
+      border-color: var(--blue);
+      color: var(--blue);
     }
 
     /* SECTIONS */
@@ -182,7 +192,7 @@
       display: flex;
       align-items: baseline;
       gap: 1rem;
-      margin-bottom: 2.5rem;
+      margin-bottom: 1.5rem;
     }
 
     .section-title {
@@ -190,19 +200,31 @@
       font-size: 1.3rem;
       font-weight: 600;
       color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .section-title::before {
+      content: '';
+      display: inline-block;
+      flex-shrink: 0;
+      width: 7px;
+      height: 7px;
+      background: var(--blue);
     }
 
     .section-num {
       font-family: var(--font-mono);
       font-size: 0.7rem;
-      color: var(--khaki-light);
+      color: var(--blue);
       letter-spacing: 0.1em;
     }
 
     /* PROJECTS */
     .project {
       padding: 1.75rem 0;
-      border-bottom: 1px solid var(--cream-dark);
+      border-bottom: 1px solid var(--border-soft);
       display: grid;
       gap: 0.5rem;
     }
@@ -220,16 +242,31 @@
       font-family: var(--font-mono);
       font-size: 0.9rem;
       font-weight: 500;
-      color: var(--khaki-dark);
+      color: var(--blue-hover);
       text-decoration: none;
     }
 
-    .project-name:hover { color: var(--khaki-light); }
+    .project-name::after {
+      content: '';
+      display: inline-block;
+      width: 0.85em;
+      height: 0.85em;
+      margin-left: 0.3em;
+      vertical-align: middle;
+      background: currentColor;
+      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17L17 7M7 7h10v10'/%3E%3C/svg%3E") no-repeat center;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17L17 7M7 7h10v10'/%3E%3C/svg%3E") no-repeat center;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+    }
+
+    .project-name:hover { color: var(--blue); }
+    .project-name:hover::after { opacity: 1; }
 
     .project-lang {
       font-family: var(--font-mono);
       font-size: 0.68rem;
-      color: var(--ink-muted);
+      color: var(--ink-faint);
       letter-spacing: 0.06em;
     }
 
@@ -251,16 +288,16 @@
       font-size: 0.65rem;
       letter-spacing: 0.06em;
       padding: 0.2rem 0.55rem;
-      background: var(--cream-mid);
+      background: var(--bg-subtle);
       border: 1px solid var(--border);
-      color: var(--ink-muted);
+      color: var(--ink-faint);
       border-radius: 2px;
     }
 
     /* WRITING */
     .post {
       padding: 1.5rem 0;
-      border-bottom: 1px solid var(--cream-dark);
+      border-bottom: 1px solid var(--border-soft);
       display: flex;
       justify-content: space-between;
       align-items: baseline;
@@ -282,7 +319,7 @@
     .post-meta {
       font-family: var(--font-mono);
       font-size: 0.68rem;
-      color: var(--ink-muted);
+      color: var(--ink-faint);
       white-space: nowrap;
       letter-spacing: 0.04em;
     }
@@ -299,7 +336,7 @@
     .footer-copy {
       font-family: var(--font-mono);
       font-size: 0.7rem;
-      color: var(--ink-muted);
+      color: var(--ink-faint);
       letter-spacing: 0.04em;
     }
 
@@ -311,12 +348,12 @@
     .footer-links a {
       font-family: var(--font-mono);
       font-size: 0.7rem;
-      color: var(--ink-muted);
+      color: var(--ink-faint);
       text-decoration: none;
       transition: color 0.2s;
     }
 
-    .footer-links a:hover { color: var(--khaki); }
+    .footer-links a:hover { color: var(--blue); }
 
     /* ANIMATIONS */
     @keyframes fadeUp {
@@ -346,12 +383,13 @@
   <!-- HERO -->
   <section class="hero">
     <p class="hero-label">{{ .Params.label }}</p>
-    <h1>{{ .Params.headline }}</h1>
+    <h1>{{ .Params.headline }}<br><em>{{ .Params.headline_em }}</em></h1>
     <p class="hero-bio">{{ .Params.bio }}</p>
     <div class="hero-links">
       <a href="{{ .Params.github }}" class="btn btn-primary">github</a>
       <a href="{{ .Params.resume }}" class="btn btn-ghost">resume</a>
       <a href="{{ .Params.linkedin }}" class="btn btn-ghost">linkedin</a>
+      <a href="mailto:robin.vidal.pro@gmail.com" class="btn btn-ghost">mail</a>
     </div>
   </section>
 
@@ -396,6 +434,7 @@
     <span class="footer-copy">robin vidal, 2026</span>
     <div class="footer-links">
       <a href="{{ .Params.github }}">github</a>
+      <a href="{{ .Params.resume }}">resume</a>
       <a href="{{ .Params.linkedin }}">linkedin</a>
       <a href="mailto:robin.vidal.pro@gmail.com">mail</a>
     </div>

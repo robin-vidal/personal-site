@@ -6,6 +6,6 @@ draft = false
 [params]
   lang = 'Go'
   description = "Deterministic OpenAI-compatible stub for benchmarking AI gateway and proxy layers. Removes LLM inference variability to isolate precise networking overhead (TTFT, TPOT, SSE streams)."
-  tags = ['go', 'performance', 'gsoc', 'open-source']
+  tags = ['go', 'performance', 'gsoc-proposal', 'open-source']
   url = 'https://github.com/robin-vidal/inference-stub'
 +++
