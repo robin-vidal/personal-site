@@ -64,7 +64,7 @@
     }
 
     .container {
-      max-width: 960px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 0 2rem;
       position: relative;
@@ -315,10 +315,22 @@
     .post:last-child { border-bottom: none; }
     .post:hover { opacity: 0.7; }
 
+    .post-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
     .post-title {
       font-family: var(--font-serif);
       font-size: 1rem;
       color: var(--ink);
+    }
+
+    .post-desc {
+      font-size: 0.82rem;
+      color: var(--ink-faint);
+      line-height: 1.5;
     }
 
     .post-meta {
@@ -364,6 +376,16 @@
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      nav { flex-wrap: wrap; gap: 1rem; }
+      .nav-links { gap: 1.25rem; }
+      .hero { padding: 3rem 0 2.5rem; }
+      footer { flex-direction: column; gap: 1rem; align-items: flex-start; }
+      .footer-copy { white-space: nowrap; }
+      .footer-links { flex-wrap: wrap; gap: 1rem; }
     }
 
     .hero-label { animation: fadeUp 0.5s ease both; }
@@ -421,18 +443,21 @@
   </section>
 
   <!-- WRITING -->
-  <!-- <section id="writing">
+  <section id="writing">
     <div class="section-header">
       <h2 class="section-title">Writing</h2>
     </div>
 
     {{ range sort (where .Site.RegularPages "Section" "writing") "Date" "desc" }}
-    <a href="{{ .Params.url }}" class="post">
-      <span class="post-title">{{ .Title }}</span>
-      <span class="post-meta">{{ if .Params.status }}{{ .Params.status }}{{ else }}{{ .Date.Format "Jan 2006" }}{{ end }}</span>
+    <a href="{{ .Permalink }}" class="post">
+      <div class="post-content">
+        <span class="post-title">{{ .Title }}</span>
+        {{ with .Params.description }}<span class="post-desc">{{ . }}</span>{{ end }}
+      </div>
+      <span class="post-meta">{{ if .Params.status }}{{ .Params.status }}{{ else }}{{ .Date.Format "Jan 2006" }} · {{ .ReadingTime }} min{{ end }}</span>
     </a>
     {{ end }}
-  </section> -->
+  </section>
 
   <!-- FOOTER -->
   <footer>

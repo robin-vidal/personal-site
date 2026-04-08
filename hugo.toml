@@ -1,3 +1,6 @@
 baseURL = 'https://robin-vidal.com/'
 languageCode = 'en-us'
 title = 'Robin Vidal'
+
+[markup.goldmark.renderer]
+  unsafe = true

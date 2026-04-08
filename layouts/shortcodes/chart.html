@@ -1,0 +1,150 @@
+{{ $id := .Get "id" }}
+{{ $type := .Get "type" | default "line" }}
+{{ $labelsRaw := .Get "labels" }}
+{{ $height := .Get "height" | default "420" }}
+{{ $xTitle := .Get "x" | default "" }}
+{{ $yTitle := .Get "y" | default "" }}
+{{ $yMax := .Get "ymax" | default "0" }}
+{{ $unit := .Get "unit" | default "" }}
+
+<div style="position: relative; width: 100%; height: {{ $height }}px;">
+  <canvas id="{{ $id }}" role="img"></canvas>
+</div>
+
+<script>
+(function() {
+  if (!window._chartJsLoaded) {
+    window._chartJsLoaded = true;
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js';
+    s.onload = function() { window.dispatchEvent(new Event('chartjs-ready')); };
+    document.head.appendChild(s);
+  }
+
+  function render() {
+    var datasets = [{{ with .Inner }}{{ . | safeJS }}{{ end }}];
+    var palette = ['#4A7FA5', '#2C3E50', '#718096', '#3A6A8E'];
+
+    var isBar = '{{ $type }}' === 'bar';
+    datasets.forEach(function(ds, i) {
+      var color = ds.borderColor || palette[i % palette.length];
+      ds.borderColor = color;
+      if (isBar) {
+        ds.borderWidth = ds.borderWidth || 0;
+        ds.borderRadius = 3;
+        ds.backgroundColor = ds.backgroundColor || color;
+        ds.hoverBackgroundColor = palette[(i + 1) % palette.length];
+      } else {
+        ds.borderWidth = ds.borderWidth || 2.5;
+        ds.pointRadius = (ds.pointRadius !== undefined) ? ds.pointRadius : 5;
+        ds.pointHoverRadius = 7;
+        ds.pointBackgroundColor = color;
+        ds.pointBorderColor = '#F2F2EF';
+        ds.pointBorderWidth = 2;
+        if (ds.fill === undefined) ds.fill = true;
+        if (!ds.tension && ds.tension !== 0) ds.tension = 0.35;
+        if (!ds.backgroundColor) {
+          if (color.startsWith('#')) {
+            var r = parseInt(color.slice(1,3),16), g = parseInt(color.slice(3,5),16), b = parseInt(color.slice(5,7),16);
+            ds.backgroundColor = 'rgba('+r+','+g+','+b+',0.08)';
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('{{ $id }}'), {
+      type: '{{ $type }}',
+      data: {
+        labels: [{{ range $i, $l := split $labelsRaw "," }}{{ if $i }},{{ end }}'{{ $l }}'{{ end }}],
+        datasets: datasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 600, easing: 'easeOutQuart' },
+        interaction: { intersect: false, mode: 'index' },
+        plugins: {
+          legend: {
+            display: datasets.length > 1,
+            position: 'top',
+            align: 'end',
+            labels: {
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 8,
+              boxHeight: 8,
+              padding: 24,
+              color: '#4A5568',
+              font: { family: "'IBM Plex Mono', monospace", size: 12 }
+            }
+          },
+          tooltip: {
+            backgroundColor: '#2C3E50',
+            titleFont: { family: "'IBM Plex Mono', monospace", size: 11 },
+            bodyFont: { family: "'IBM Plex Mono', monospace", size: 12 },
+            padding: { top: 10, bottom: 10, left: 14, right: 14 },
+            cornerRadius: 2,
+            caretSize: 0,
+            displayColors: true,
+            boxWidth: 8,
+            boxHeight: 8,
+            boxPadding: 6,
+            callbacks: {
+              label: function(ctx) { return ctx.dataset.label + '  ' + ctx.parsed.y.toLocaleString() + {{ with .Get "unit" }} ' {{ . }}'{{ else }}''{{ end }}; }
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: {
+              display: {{ if $xTitle }}true{{ else }}false{{ end }},
+              text: '{{ $xTitle }}',
+              color: '#718096',
+              font: { family: "'IBM Plex Mono', monospace", size: 12 },
+              padding: { top: 12 }
+            },
+            border: { color: '#D4D4CF' },
+            grid: { display: false },
+            ticks: {
+              color: '#4A5568',
+              font: { family: "'IBM Plex Mono', monospace", size: 12 },
+              padding: 8
+            }
+          },
+          y: {
+            title: {
+              display: {{ if $yTitle }}true{{ else }}false{{ end }},
+              text: '{{ $yTitle }}',
+              color: '#718096',
+              font: { family: "'IBM Plex Mono', monospace", size: 12 },
+              padding: { bottom: 12 }
+            },
+            {{ if ne $yMax "0" }}min: 0, max: {{ $yMax }},{{ end }}
+            border: { display: false },
+            grid: { color: '#E6E6E3', lineWidth: 1 },
+            ticks: {
+              color: '#4A5568',
+              font: { family: "'IBM Plex Mono', monospace", size: 12 },
+              callback: function(v) {
+                if (v >= 1000000) return (v / 1000000).toFixed(1) + 'M';
+                if (v >= 1000) return (v / 1000).toFixed(0) + 'k';
+                return v;
+              },
+              padding: 12,
+              maxTicksLimit: 7
+            }
+          }
+        }
+      }
+    });
+  }
+
+  var done = false;
+  function once() { if (!done) { done = true; render(); } }
+  if (window.Chart) { once(); }
+  else {
+    window.addEventListener('chartjs-ready', once);
+    var poll = setInterval(function() { if (window.Chart) { clearInterval(poll); once(); } }, 100);
+  }
+})();
+</script>
