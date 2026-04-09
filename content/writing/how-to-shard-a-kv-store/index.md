@@ -114,7 +114,7 @@ With all of this in place, here is the same benchmark again, this time comparing
 
 Sharding works. Throughput scales linearly up to 8 workers, which is both the number of shards and the number of cores on this machine. Past that point the CPU itself becomes the limit, not the locks.
 
-Thanks for reading! :)
+Thanks for reading.
 
 ---
 
