@@ -1,0 +1,34 @@
+name: Package and Push Helm Chart
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - chart/**
+  workflow_dispatch:
+
+jobs:
+  helm-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Login to GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io \
+            --username ${{ github.actor }} \
+            --password-stdin
+
+      - name: Package chart
+        run: helm package chart/personal-site
+
+      - name: Push chart
+        run: |
+          helm push personal-site-*.tgz \
+            oci://ghcr.io/${{ github.repository_owner }}/charts
