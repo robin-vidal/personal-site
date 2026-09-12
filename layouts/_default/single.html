@@ -20,10 +20,10 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Google+Sans+Code:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:          #F2F2EF;
+      --bg:          #FFFFFF;
       --bg-card:     #EBEBE8;
       --bg-subtle:   #E6E6E3;
 
@@ -33,14 +33,14 @@
       --border:      #D4D4CF;
       --border-soft: #E0E0DC;
 
-      --blue:        #4A7FA5;
-      --blue-hover:  #3A6A8E;
-      --blue-bg:     #EBF2F7;
-      --blue-border: #BDD4E4;
+      --blue:        #4B82F1;
+      --blue-hover:  #3A6FD8;
+      --blue-bg:     #EBF0FE;
+      --blue-border: #BDD0FA;
 
-      --font-serif: 'Lora', Georgia, serif;
-      --font-mono:  'IBM Plex Mono', monospace;
-      --font-sans:  'IBM Plex Sans', sans-serif;
+      --font-serif: 'Google Sans', sans-serif;
+      --font-mono:  'Google Sans', sans-serif;
+      --font-sans:  'Google Sans', sans-serif;
 
       --radius:      4px;
     }
@@ -58,7 +58,7 @@
       background: var(--bg);
       color: var(--ink);
       font-family: var(--font-sans);
-      font-weight: 300;
+      font-weight: 400;
       line-height: 1.7;
       font-size: 16px;
     }
@@ -83,16 +83,16 @@
 
     /* NAV */
     nav {
-      padding: 2.5rem 0 2rem;
+      padding: 0;
+      margin-top: 2.5rem;
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      border-bottom: 1px solid var(--border);
     }
 
     .nav-name {
       font-family: var(--font-mono);
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       font-weight: 500;
       color: var(--ink);
       text-decoration: none;
@@ -107,7 +107,7 @@
 
     .nav-links a {
       font-family: var(--font-mono);
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       color: var(--ink-faint);
       text-decoration: none;
       letter-spacing: 0.08em;
@@ -119,18 +119,18 @@
 
     /* ARTICLE */
     .article {
-      padding: 4rem 0 3rem;
+      padding: 3rem 0 3rem;
     }
 
     .article-back {
       font-family: var(--font-mono);
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       color: var(--ink-faint);
       text-decoration: none;
       letter-spacing: 0.06em;
       transition: color 0.2s;
       display: inline-block;
-      margin-bottom: 3rem;
+      margin-bottom: 1rem;
     }
 
     .article-back:hover { color: var(--blue); }
@@ -147,7 +147,7 @@
 
     .article-meta {
       font-family: var(--font-mono);
-      font-size: 0.72rem;
+      font-size: 0.85rem;
       color: var(--ink-faint);
       letter-spacing: 0.04em;
       margin-bottom: 1rem;
@@ -165,10 +165,10 @@
       font-size: 0.65rem;
       letter-spacing: 0.06em;
       padding: 0.2rem 0.55rem;
-      background: var(--bg-subtle);
-      border: 1px solid var(--border);
+      background: transparent;
+      border: 1px solid var(--ink-faint);
       color: var(--ink-faint);
-      border-radius: 2px;
+      border-radius: 5px;
     }
 
     /* ARTICLE BODY */
@@ -242,7 +242,7 @@
     }
 
     .article-body code {
-      font-family: var(--font-mono);
+      font-family: 'Google Sans Code', monospace;
       font-size: 0.88em;
       background: var(--bg-subtle);
       border: 1px solid var(--border-soft);
@@ -260,7 +260,7 @@
     }
 
     .article-body pre code {
-      font-family: var(--font-mono);
+      font-family: 'Google Sans Code', monospace;
       font-size: 0.82rem;
       line-height: 1.65;
       color: var(--bg);
@@ -296,7 +296,6 @@
     /* FOOTER */
     footer {
       padding: 3rem 0;
-      border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -304,7 +303,7 @@
 
     .footer-copy {
       font-family: var(--font-mono);
-      font-size: 0.7rem;
+      font-size: 0.85rem;
       color: var(--ink-faint);
       letter-spacing: 0.04em;
       white-space: nowrap;
@@ -317,7 +316,7 @@
 
     .footer-links a {
       font-family: var(--font-mono);
-      font-size: 0.7rem;
+      font-size: 0.85rem;
       color: var(--ink-faint);
       text-decoration: none;
       transition: color 0.2s;
@@ -373,7 +372,7 @@
 
   <!-- FOOTER -->
   <footer>
-    <span class="footer-copy">robin vidal, 2026</span>
+    <span class="footer-copy"><span style="font-size: inherit; font-family: sans-serif">&copy;</span> robin vidal, 2026</span>
     <div class="footer-links">
       <a href="{{ .Site.Params.github }}">github</a>
       <a href="{{ .Site.Params.resume }}">resume</a>

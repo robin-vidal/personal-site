@@ -23,7 +23,7 @@
 
   function render() {
     var datasets = [{{ with .Inner }}{{ . | safeJS }}{{ end }}];
-    var palette = ['#4A7FA5', '#2C3E50', '#718096', '#3A6A8E'];
+    var palette = ['#4B82F1', '#2C3E50', '#718096', '#3A6FD8'];
 
     var isBar = '{{ $type }}' === 'bar';
     datasets.forEach(function(ds, i) {
@@ -39,7 +39,7 @@
         ds.pointRadius = (ds.pointRadius !== undefined) ? ds.pointRadius : 5;
         ds.pointHoverRadius = 7;
         ds.pointBackgroundColor = color;
-        ds.pointBorderColor = '#F2F2EF';
+        ds.pointBorderColor = '#FFFFFF';
         ds.pointBorderWidth = 2;
         if (ds.fill === undefined) ds.fill = true;
         if (!ds.tension && ds.tension !== 0) ds.tension = 0.35;

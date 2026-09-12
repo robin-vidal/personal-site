@@ -19,11 +19,11 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Google+Sans+Code:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
       /* 60% */
-      --bg:          #F2F2EF;
+      --bg:          #FFFFFF;
       --bg-card:     #EBEBE8;
       --bg-subtle:   #E6E6E3;
 
@@ -35,14 +35,14 @@
       --border-soft: #E0E0DC;
 
       /* 10% */
-      --blue:        #4A7FA5;
-      --blue-hover:  #3A6A8E;
-      --blue-bg:     #EBF2F7;
-      --blue-border: #BDD4E4;
+      --blue:        #4B82F1;
+      --blue-hover:  #3A6FD8;
+      --blue-bg:     #EBF0FE;
+      --blue-border: #BDD0FA;
 
-      --font-serif: 'Lora', Georgia, serif;
-      --font-mono:  'IBM Plex Mono', monospace;
-      --font-sans:  'IBM Plex Sans', sans-serif;
+      --font-serif: 'Google Sans', sans-serif;
+      --font-mono:  'Google Sans', sans-serif;
+      --font-sans:  'Google Sans', sans-serif;
 
       --radius:      4px;
     }
@@ -60,20 +60,11 @@
       background: var(--bg);
       color: var(--ink);
       font-family: var(--font-sans);
-      font-weight: 300;
+      font-weight: 400;
       line-height: 1.7;
       font-size: 16px;
     }
 
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.4;
-    }
 
     .container {
       max-width: 900px;
@@ -85,16 +76,16 @@
 
     /* NAV */
     nav {
-      padding: 2.5rem 0 2rem;
+      padding: 0;
+      margin-top: 2.5rem;
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      border-bottom: 1px solid var(--border);
     }
 
     .nav-name {
       font-family: var(--font-mono);
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       font-weight: 500;
       color: var(--ink);
       text-decoration: none;
@@ -109,7 +100,7 @@
 
     .nav-links a {
       font-family: var(--font-mono);
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       color: var(--ink-faint);
       text-decoration: none;
       letter-spacing: 0.08em;
@@ -121,7 +112,7 @@
 
     /* HERO */
     .hero {
-      padding: 6rem 0 5rem;
+      padding: 3.5rem 0 3rem;
       border-top: none;
     }
 
@@ -173,7 +164,7 @@
       letter-spacing: 0.06em;
       text-decoration: none;
       padding: 0.6rem 1.2rem;
-      border-radius: 2px;
+      border-radius: 5px;
       transition: all 0.2s;
     }
 
@@ -190,8 +181,8 @@
 
     .btn-ghost {
       background: transparent;
-      color: var(--ink-muted);
-      border: 1px solid var(--border);
+      color: var(--ink-faint);
+      border: 1px solid var(--ink-faint);
     }
 
     .btn-ghost:hover {
@@ -201,7 +192,7 @@
 
     /* SECTIONS */
     section {
-      padding: 4rem 0;
+      padding: 3rem 0;
       border-top: 1px solid var(--border);
     }
 
@@ -222,14 +213,6 @@
       gap: 0.6rem;
     }
 
-    .section-title::before {
-      content: '';
-      display: inline-block;
-      flex-shrink: 0;
-      width: 7px;
-      height: 7px;
-      background: var(--blue);
-    }
 
     .section-num {
       font-family: var(--font-mono);
@@ -240,13 +223,15 @@
 
     /* PROJECTS */
     .project {
-      padding: 1.75rem 0;
+      padding: 0;
       border-bottom: 1px solid var(--border-soft);
       display: grid;
       gap: 0.5rem;
     }
 
     .project:last-child { border-bottom: none; }
+    .project:not(:last-child) { padding-bottom: 1.75rem; }
+    .project:not(:first-child) { margin-top: 1.75rem; }
 
     .project-top {
       display: flex;
@@ -282,7 +267,7 @@
 
     .project-lang {
       font-family: var(--font-mono);
-      font-size: 0.68rem;
+      font-size: 0.78rem;
       color: var(--ink-faint);
       letter-spacing: 0.06em;
     }
@@ -305,15 +290,15 @@
       font-size: 0.65rem;
       letter-spacing: 0.06em;
       padding: 0.2rem 0.55rem;
-      background: var(--bg-subtle);
-      border: 1px solid var(--border);
+      background: transparent;
+      border: 1px solid var(--ink-faint);
       color: var(--ink-faint);
-      border-radius: 2px;
+      border-radius: 5px;
     }
 
     /* WRITING */
     .post {
-      padding: 1.5rem 0;
+      padding: 0;
       border-bottom: 1px solid var(--border-soft);
       display: flex;
       justify-content: space-between;
@@ -325,6 +310,8 @@
     }
 
     .post:last-child { border-bottom: none; }
+    .post:not(:last-child) { padding-bottom: 1.75rem; }
+    .post:not(:first-child) { margin-top: 1.75rem; }
     .post:hover { opacity: 0.7; }
 
     .post-content {
@@ -336,18 +323,32 @@
     .post-title {
       font-family: var(--font-serif);
       font-size: 1rem;
-      color: var(--ink);
+      color: var(--blue);
+    }
+
+    .post-title::after {
+      content: '';
+      display: inline-block;
+      width: 0.85em;
+      height: 0.85em;
+      margin-left: 0.3em;
+      vertical-align: middle;
+      background: currentColor;
+      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17L17 7M7 7h10v10'/%3E%3C/svg%3E") no-repeat center;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17L17 7M7 7h10v10'/%3E%3C/svg%3E") no-repeat center;
+      opacity: 0.5;
+      transition: opacity 0.2s;
     }
 
     .post-desc {
-      font-size: 0.82rem;
+      font-size: 0.92rem;
       color: var(--ink-faint);
       line-height: 1.5;
     }
 
     .post-meta {
       font-family: var(--font-mono);
-      font-size: 0.68rem;
+      font-size: 0.78rem;
       color: var(--ink-faint);
       white-space: nowrap;
       letter-spacing: 0.04em;
@@ -356,7 +357,6 @@
     /* FOOTER */
     footer {
       padding: 3rem 0;
-      border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -364,7 +364,7 @@
 
     .footer-copy {
       font-family: var(--font-mono);
-      font-size: 0.7rem;
+      font-size: 0.85rem;
       color: var(--ink-faint);
       letter-spacing: 0.04em;
     }
@@ -376,7 +376,7 @@
 
     .footer-links a {
       font-family: var(--font-mono);
-      font-size: 0.7rem;
+      font-size: 0.85rem;
       color: var(--ink-faint);
       text-decoration: none;
       transition: color 0.2s;
@@ -421,8 +421,7 @@
 
   <!-- HERO -->
   <section class="hero">
-    <p class="hero-label">{{ .Params.label }}</p>
-    <h1>{{ .Params.headline }}<br><em>{{ .Params.headline_em }}</em></h1>
+<h1>{{ .Params.headline }}<br><span style="color: var(--ink-faint)">{{ .Params.headline_em }}</span></h1>
     <p class="hero-bio">{{ .Params.bio }}</p>
     <div class="hero-links">
       <a href="{{ .Params.github }}" class="btn btn-primary">github</a>
@@ -473,7 +472,7 @@
 
   <!-- FOOTER -->
   <footer>
-    <span class="footer-copy">robin vidal, 2026</span>
+    <span class="footer-copy"><span style="font-size: inherit; font-family: sans-serif">&copy;</span> robin vidal, 2026</span>
     <div class="footer-links">
       <a href="{{ .Params.github }}">github</a>
       <a href="{{ .Params.resume }}">resume</a>
