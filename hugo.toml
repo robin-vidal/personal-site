@@ -2,5 +2,10 @@ baseURL = 'https://robin-vidal.com/'
 languageCode = 'en-us'
 title = 'Robin Vidal'
 
+[params]
+  github = '/github'
+  resume = '/resume.pdf'
+  linkedin = '/linkedin'
+
 [markup.goldmark.renderer]
   unsafe = true
