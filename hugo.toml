@@ -3,6 +3,8 @@ languageCode = 'en-us'
 title = 'Robin Vidal'
 
 [params]
+  # GoatCounter instance, without trailing slash. Empty disables analytics.
+  goatcounter = 'https://goatcounter.robin-vidal.fr'
   github = '/github'
   resume = '/resume.pdf'
   linkedin = '/linkedin'

@@ -518,7 +518,7 @@
     <a href="/" class="article-back">&larr; back</a>
 
     <h1 class="article-title">{{ .Title }}</h1>
-    <p class="article-meta">{{ .Date.Format "Jan 2, 2006" }} &middot; {{ .ReadingTime }} min read</p>
+    <p class="article-meta">{{ .Date.Format "Jan 2, 2006" }} &middot; {{ .ReadingTime }} min read{{ if and site.Params.goatcounter (eq .Section "writing") }} &middot; <span class="view-count" data-views="{{ .RelPermalink }}" hidden></span>{{ end }}</p>
 
     {{ with .Params.tags }}
     <div class="article-tags">
@@ -545,6 +545,8 @@
   </footer>
 
 </div>
+
+{{ partial "goatcounter.html" . }}
 
 {{ with site.Data.glossary }}
 <template id="glossary-defs">

@@ -1,0 +1,22 @@
+{{ with site.Params.goatcounter }}
+<script data-goatcounter="{{ . }}/count" async src="{{ . }}/count.js"></script>
+<script>
+  // Fills every [data-views] element with its page view count, pulled from
+  // GoatCounter's public counter endpoint (Settings -> "Allow adding visitor
+  // counts to your website" must be on). Shows "?" when the backend is
+  // unreachable or the endpoint is not public.
+  (function () {
+    var targets = document.querySelectorAll('[data-views]');
+    if (!targets.length) return;
+
+    targets.forEach(function (el) {
+      var path = el.getAttribute('data-views');
+      fetch('{{ . }}/counter/' + encodeURIComponent(path) + '.json')
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+        .then(function (d) { el.textContent = d.count + ' views'; })
+        .catch(function () { el.textContent = '? views'; })
+        .finally(function () { el.hidden = false; });
+    });
+  })();
+</script>
+{{ end }}
