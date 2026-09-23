@@ -1,0 +1,47 @@
+# Terms defined on hover in article bodies.
+# `match` lists every written form that should get the popup (case-insensitive).
+# `def` is inline markdown.
+
+- term: kvgo
+  match: ["kvgo"]
+  def: "My open-source KV store, written in Go: [github.com/robin-vidal/kvgo](https://github.com/robin-vidal/kvgo)."
+
+- term: KV store
+  match: ["KV store", "KV stores", "key-value store", "key-value stores"]
+  def: "A **key-value store**: a database that maps keys to values, with no schema and no query language. Reads and writes are point lookups like `GET key` and `SET key value`."
+
+- term: Redis-compatible
+  match: ["Redis-compatible"]
+  def: "Speaks the Redis wire protocol (RESP), so existing Redis clients and tools like `redis-cli` can talk to it unchanged."
+
+- term: mutex
+  match: ["mutex", "mutexes"]
+  def: "Mutual exclusion lock: only one thread at a time may hold it, so only one thread at a time runs the critical section it guards."
+
+- term: sync.RWMutex
+  match: ["sync.RWMutex"]
+  def: "Go's reader/writer lock: any number of readers can hold it at once, or a single writer exclusively."
+
+- term: sharding
+  match: ["sharding", "sharded"]
+  def: "Splitting one data structure into N independent partitions (shards), each with its own lock, so operations on different shards never wait on each other."
+
+- term: contention
+  match: ["contention"]
+  def: "Threads competing for the same lock. The time they spend blocked waiting for it is time not spent doing work, so throughput stops scaling with cores."
+
+- term: FNV-64a
+  match: ["FNV-64a"]
+  def: "A fast, non-cryptographic hash function that mixes the input byte by byte into a 64-bit value: [Fowler-Noll-Vo](https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function), 64-bit alternate variant."
+
+- term: consistent hashing
+  match: ["consistent hashing"]
+  def: "Keys and nodes are hashed onto a ring; a key belongs to the next node clockwise. Adding or removing a node only moves the keys in its arc, instead of remapping everything like `hash % n` does."
+
+- term: Raft
+  match: ["Raft"]
+  def: "A consensus algorithm: nodes elect a leader, the leader appends entries to a replicated log, and an entry is committed once a majority has stored it. That is how replicas agree on the same state."
+
+- term: vnodes
+  match: ["vnodes", "vnode", "virtual nodes"]
+  def: "Virtual nodes: each physical machine takes many positions on the hash ring instead of one, which evens out the key distribution and spreads the load of a departing node across all the others."

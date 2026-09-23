@@ -270,6 +270,168 @@
       border-radius: 0;
     }
 
+    /* CODE BLOCKS */
+    .article-body .code-block {
+      background: #272822;
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .code-block-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.75rem 1.5rem 0;
+      font-family: 'Google Sans Code', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      line-height: 1.4;
+    }
+
+    .code-block-lang {
+      color: #a5a49a;
+      text-transform: lowercase;
+    }
+
+    .code-block-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font: inherit;
+      color: #a5a49a;
+      background: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .code-block-copy:hover {
+      color: #f8f8f2;
+    }
+
+    .code-block-copy.copied {
+      color: #a6e22e;
+    }
+
+    .article-body .code-block .highlight,
+    .article-body .code-block pre {
+      margin: 0;
+      border-radius: 0;
+    }
+
+    .article-body .code-block pre {
+      padding-top: 0.75rem;
+    }
+
+    /* DEFINITIONS */
+    .def {
+      position: relative;
+      display: inline-block;
+      cursor: help;
+      outline: none;
+    }
+
+    .def-term {
+      border-bottom: 1px dashed var(--ink-faint);
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .def:hover .def-term,
+    .def:focus-visible .def-term,
+    .def.is-pinned .def-term {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+
+    .def.is-pinned .def-term { border-bottom-style: solid; }
+
+    /* inline code as the term: mark the code element itself, its own
+       background and border would otherwise hide the underline */
+    .def-code .def-term,
+    .def-term:has(> code) { border-bottom: none; }
+
+    .def-code .def-term > code,
+    .def-term > code {
+      border-bottom: 1px dashed var(--ink-faint);
+      transition: color 0.2s, background 0.2s, border-color 0.2s;
+    }
+
+    .def-code:hover .def-term > code,
+    .def-code:focus-visible .def-term > code,
+    .def-code.is-pinned .def-term > code,
+    .def:hover .def-term > code,
+    .def:focus-visible .def-term > code,
+    .def.is-pinned .def-term > code {
+      color: var(--blue);
+      background: var(--blue-bg);
+      border-color: var(--blue-border);
+      border-bottom-color: var(--blue);
+    }
+
+    .def-code.is-pinned .def-term > code,
+    .def.is-pinned .def-term > code { border-bottom-style: solid; }
+
+    .def-popup {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 0.5rem);
+      transform: translateX(calc(-50% + var(--def-shift, 0px)));
+      z-index: 10;
+      width: max-content;
+      max-width: min(20rem, calc(100vw - 2rem));
+      padding: 0.6rem 0.8rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 6px 20px rgba(44, 62, 80, 0.12);
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 1.55;
+      color: var(--ink-muted);
+      text-align: left;
+      cursor: auto;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.15s, visibility 0.15s;
+    }
+
+    /* invisible bridge so moving the cursor into the popup keeps it open */
+    .def-popup::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      height: 0.5rem;
+    }
+
+    .def-popup.def-popup--below {
+      bottom: auto;
+      top: calc(100% + 0.5rem);
+    }
+
+    .def-popup.def-popup--below::after {
+      top: auto;
+      bottom: 100%;
+    }
+
+    .def-popup code {
+      font-size: 0.85em;
+    }
+
+    .def:hover .def-popup,
+    .def:focus-visible .def-popup,
+    .def.is-pinned .def-popup {
+      opacity: 1;
+      visibility: visible;
+    }
+
     .article-body ul,
     .article-body ol {
       padding-left: 1.5rem;
@@ -332,6 +494,7 @@
       .article { padding: 2.5rem 0 2rem; }
       .article-back { margin-bottom: 2rem; }
       .article-body pre { padding: 1rem; }
+      .code-block-bar { padding: 0.65rem 1rem 0; }
       footer { flex-direction: column; gap: 1rem; align-items: flex-start; }
       .footer-links { flex-wrap: wrap; gap: 1rem; }
     }
@@ -382,6 +545,171 @@
   </footer>
 
 </div>
+
+{{ with site.Data.glossary }}
+<template id="glossary-defs">
+  {{ range . }}
+  <span data-term="{{ .term }}" data-match="{{ .match | jsonify }}">{{ .def | $.RenderString }}</span>
+  {{ end }}
+</template>
+{{ end }}
+
+<script>
+  document.querySelectorAll('.code-block-copy').forEach(function (btn) {
+    var label = btn.querySelector('.code-block-copy-label');
+    var timer;
+    btn.addEventListener('click', function () {
+      var code = btn.closest('.code-block').querySelector('code');
+      navigator.clipboard.writeText(code.innerText).then(function () {
+        btn.classList.add('copied');
+        label.textContent = 'copied';
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          btn.classList.remove('copied');
+          label.textContent = 'copy';
+        }, 1600);
+      });
+    });
+  });
+
+  // Wrap every occurrence of a glossary term in the article body.
+  (function () {
+    var body = document.querySelector('.article-body');
+    var store = document.getElementById('glossary-defs');
+    if (!body || !store) return;
+
+    var lookup = {};
+    var forms = [];
+    store.content.querySelectorAll('[data-term]').forEach(function (node) {
+      var entry = { html: node.innerHTML };
+      JSON.parse(node.getAttribute('data-match')).forEach(function (form) {
+        lookup[form.toLowerCase()] = entry;
+        forms.push(form);
+      });
+    });
+    if (!forms.length) return;
+
+    // longest first so "KV store" wins over a shorter overlapping form
+    forms.sort(function (a, b) { return b.length - a.length; });
+    var re = new RegExp('\\b(' + forms.map(function (f) {
+      return f.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }).join('|') + ')\\b', 'gi');
+
+    var SKIP = 'pre, code, a, .def, h1, h2, h3, h4, h5, h6, figcaption';
+
+    function defSpan(entry) {
+      var span = document.createElement('span');
+      span.className = 'def';
+      span.tabIndex = 0;
+      span.setAttribute('role', 'button');
+      span.setAttribute('aria-expanded', 'false');
+      var term = document.createElement('span');
+      term.className = 'def-term';
+      var popup = document.createElement('span');
+      popup.className = 'def-popup';
+      popup.setAttribute('role', 'tooltip');
+      popup.innerHTML = entry.html;
+      span.appendChild(term);
+      span.appendChild(popup);
+      return span;
+    }
+
+    // plain text occurrences
+    var walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (node) {
+        if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        if (node.parentElement.closest(SKIP)) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var texts = [];
+    while (walker.nextNode()) texts.push(walker.currentNode);
+
+    texts.forEach(function (node) {
+      var text = node.nodeValue;
+      re.lastIndex = 0;
+      if (!re.test(text)) return;
+      re.lastIndex = 0;
+
+      var frag = document.createDocumentFragment();
+      var last = 0;
+      var match;
+      while ((match = re.exec(text)) !== null) {
+        var entry = lookup[match[0].toLowerCase()];
+        if (!entry) continue;
+        if (match.index > last) {
+          frag.appendChild(document.createTextNode(text.slice(last, match.index)));
+        }
+        var span = defSpan(entry);
+        span.querySelector('.def-term').textContent = match[0];
+        frag.appendChild(span);
+        last = match.index + match[0].length;
+      }
+      if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+      node.parentNode.replaceChild(frag, node);
+    });
+
+    // inline code occurrences, e.g. `sync.RWMutex`
+    body.querySelectorAll('code').forEach(function (code) {
+      if (code.closest('pre, .def, a')) return;
+      var entry = lookup[code.textContent.trim().toLowerCase()];
+      if (!entry) return;
+      var span = defSpan(entry);
+      span.classList.add('def-code');
+      code.parentNode.replaceChild(span, code);
+      span.querySelector('.def-term').appendChild(code);
+    });
+  })();
+
+  (function () {
+    var defs = document.querySelectorAll('.def');
+    if (!defs.length) return;
+
+    function place(def) {
+      var pop = def.querySelector('.def-popup');
+      pop.style.setProperty('--def-shift', '0px');
+      pop.classList.remove('def-popup--below');
+      var rect = pop.getBoundingClientRect();
+      var margin = 12;
+      var shift = 0;
+      if (rect.left < margin) shift = margin - rect.left;
+      else if (rect.right > window.innerWidth - margin) shift = window.innerWidth - margin - rect.right;
+      pop.style.setProperty('--def-shift', shift + 'px');
+      if (rect.top < margin) pop.classList.add('def-popup--below');
+    }
+
+    function unpinAll(except) {
+      defs.forEach(function (def) {
+        if (def === except) return;
+        def.classList.remove('is-pinned');
+        def.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    defs.forEach(function (def) {
+      def.addEventListener('mouseenter', function () { place(def); });
+      def.addEventListener('focus', function () { place(def); });
+      def.addEventListener('click', function (e) {
+        if (e.target.closest('.def-popup')) return;
+        e.stopPropagation();
+        var pinned = def.classList.toggle('is-pinned');
+        def.setAttribute('aria-expanded', pinned ? 'true' : 'false');
+        unpinAll(def);
+        if (pinned) place(def);
+      });
+      def.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        def.click();
+      });
+    });
+
+    document.addEventListener('click', function () { unpinAll(null); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') unpinAll(null);
+    });
+  })();
+</script>
 
 </body>
 </html>

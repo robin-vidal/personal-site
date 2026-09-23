@@ -1,0 +1,3 @@
+{{- $term := .Get 0 -}}
+{{- $def := trim .Inner "\n" -}}
+<span class="def" tabindex="0" role="button" aria-expanded="false"><span class="def-term">{{ $term | .Page.RenderString }}</span><span class="def-popup" role="tooltip">{{ $def | .Page.RenderString }}</span></span>

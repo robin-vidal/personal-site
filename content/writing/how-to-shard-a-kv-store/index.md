@@ -6,7 +6,7 @@ tags: ["go", "distributed-systems", "concurrency", "performance"]
 description: "Shard count, key routing, and what to defer: a practical walkthrough of the sharding decisions behind kvgo."
 ---
 
-[kvgo](https://github.com/robin-vidal/kvgo) is a multithreaded, Redis-compatible KV store I'm building in Go. The first version was simple: a hash map behind a single lock. It worked, until I ran concurrent writes and watched every thread queue up waiting for access to the same structure.
+kvgo is a multithreaded, Redis-compatible KV store I'm building in Go. The first version was simple: a hash map behind a single lock. It worked, until I ran concurrent writes and watched every thread queue up waiting for access to the same structure.
 
 This post walks through the three decisions that shaped the sharding architecture: how many shards, how to route keys, and what not to build yet.
 
@@ -65,7 +65,7 @@ The shard count is fixed at startup. Since kvgo runs on a single node, there is 
 
 With shards in place, every operation needs to find the right shard for a given key. The requirements are simple: fast, uniform distribution, deterministic.
 
-I went with [FNV-64a](https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function) (Fowler-Noll-Vo, 64-bit alternate variant). It is fast, has excellent distribution for short string keys, and is built into Go's standard library. MD5 or SHA would work too, but cryptographic properties are overkill here.
+I went with FNV-64a. It is fast, has excellent distribution for short string keys, and is built into Go's standard library. MD5 or SHA would work too, but cryptographic properties are overkill here.
 
 ```go
 func getShard(key string, shardAmount int) int {
