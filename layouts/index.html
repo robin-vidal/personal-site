@@ -460,13 +460,12 @@
     </div>
 
     {{ range sort (where .Site.RegularPages "Section" "writing") "Date" "desc" }}
-    {{ $post := . }}
     <a href="{{ .Permalink }}" class="post">
       <div class="post-content">
         <span class="post-title">{{ .Title }}</span>
         {{ with .Params.description }}<span class="post-desc">{{ . }}</span>{{ end }}
       </div>
-      <span class="post-meta">{{ if .Params.status }}{{ .Params.status }}{{ else }}{{ .Date.Format "Jan 2006" }} · {{ .ReadingTime }} min{{ with site.Params.goatcounter }} · <span class="view-count" data-views="{{ $post.RelPermalink }}" hidden></span>{{ end }}{{ end }}</span>
+      <span class="post-meta">{{ if .Params.status }}{{ .Params.status }}{{ else }}{{ .Date.Format "Jan 2006" }} · {{ .ReadingTime }} min{{ end }}</span>
     </a>
     {{ end }}
   </section>
