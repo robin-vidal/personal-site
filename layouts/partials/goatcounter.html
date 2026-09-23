@@ -10,10 +10,15 @@
     if (!targets.length) return;
 
     targets.forEach(function (el) {
-      var path = el.getAttribute('data-views');
-      fetch('{{ . }}/counter/' + encodeURIComponent(path) + '.json')
-        .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-        .then(function (d) { el.textContent = d.count + ' views'; })
+      // path already starts with "/", so this yields /counter//writing/x/.json,
+      // which is the form GoatCounter expects (encoding the slashes 307s away).
+      fetch('{{ . }}/counter' + el.getAttribute('data-views') + '.json')
+        // a path with no hits yet answers 404 with a valid {"count":"0"} body,
+        // so trust the body rather than the status
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          el.textContent = (d && d.count != null ? d.count : '?') + ' views';
+        })
         .catch(function () { el.textContent = '? views'; })
         .finally(function () { el.hidden = false; });
     });

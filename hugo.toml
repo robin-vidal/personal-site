@@ -4,7 +4,7 @@ title = 'Robin Vidal'
 
 [params]
   # GoatCounter instance, without trailing slash. Empty disables analytics.
-  goatcounter = 'https://goatcounter.robin-vidal.fr'
+  goatcounter = 'https://goatcounter.robin-vidal.com'
   github = '/github'
   resume = '/resume.pdf'
   linkedin = '/linkedin'
