@@ -45,3 +45,15 @@
 - term: vnodes
   match: ["vnodes", "vnode", "virtual nodes"]
   def: "Virtual nodes: each physical machine takes many positions on the hash ring instead of one, which evens out the key distribution and spreads the load of a departing node across all the others."
+
+- term: WAL
+  match: ["WAL", "write-ahead log"]
+  def: "Write-ahead log: every write is appended to a file and flushed to disk before the client gets its acknowledgement, so a crash cannot lose an acknowledged write. That flush is why writes over the wire cost far more than reads."
+
+- term: ranges
+  match: ["ranges", "range"]
+  def: "A contiguous slice of the sorted keyspace, owned by one group of nodes. TiKV and CockroachDB split their data this way and move ranges between nodes to rebalance, which is what makes the node set dynamic."
+
+- term: goroutine
+  match: ["goroutine", "goroutines"]
+  def: "Go's unit of concurrency: a function running independently, scheduled by the Go runtime onto OS threads rather than getting one each. They start at a few kilobytes of stack, so running thousands of them is routine."

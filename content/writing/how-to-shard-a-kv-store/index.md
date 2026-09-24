@@ -10,7 +10,9 @@ kvgo is a multithreaded, Redis-compatible KV store I'm building in Go. The first
 
 This post walks through the three decisions that shaped the sharding architecture: how many shards, how to route keys, and what not to build yet.
 
-All benchmarks below are SET-only workloads with random keys from a 1M key space, measured over 2 seconds on an 8-core machine.
+These are in-process numbers: goroutines calling the sharded map directly, with no TCP. They isolate lock behaviour, so read them as such rather than as kvgo's throughput. Over the wire the same box serves about 180k reads per second, and writes land well below that, bound by durability rather than by locking.
+
+All benchmarks below are `SET`-only workloads with pre-generated keys from a 1M key space, on a 10-core Linux box. Each point is the median of 10 runs of 500k operations.
 
 ## The Bottleneck
 
@@ -18,15 +20,15 @@ A naive KV store is a map behind a single mutex. Every operation, read or write,
 
 On a single thread this is fine. But under concurrent load, threads pile up waiting for the lock even when they are operating on completely different keys. The lock becomes the bottleneck, and adding more CPU cores does not help:
 
-{{< chart id="bottleneckChart" labels="1,2,4,8,16,32,64" x="concurrent workers" y="ops / sec" ymax="6000000" unit="ops/s" >}}
+{{< chart id="bottleneckChart" labels="1,2,4,8,16,32,64" x="concurrent workers" y="ops / sec" ymax="4500000" unit="ops/s" >}}
 {
   label: 'single mutex',
-  data: [2399158, 2171374, 2250882, 2239014, 2204556, 2070426, 2145718],
+  data: [2536511, 1847578, 1755190, 1685488, 1680981, 1725182, 1702716],
   borderDash: [6, 3]
 }
 {{< /chart >}}
 
-Throughput stays flat around 2M ops/sec regardless of how many workers are running. The fix is sharding: split the map into N independent buckets, each with its own lock. Two writers hitting different keys in different shards no longer block each other.
+Throughput drops the moment a second worker shows up, from 2.5M ops/sec down to 1.8M, and stays there no matter how many more you add. Every worker past the first spends its time queueing rather than working. The fix is sharding: split the map into N independent buckets, each with its own lock. Two writers hitting different keys in different shards no longer block each other.
 
 ## How Many Shards?
 
@@ -34,9 +36,9 @@ The idea is straightforward, but the first question is how many shards to create
 
 The natural anchor is the number of CPU cores. At peak concurrency, the OS can only run as many threads simultaneously as there are logical CPUs. One shard per core means that in the best case, every concurrent writer lands on a different shard with zero contention.
 
-In kvgo, the shard count comes from a config value (defaulting to the number of cores). This keeps it easy to tune and benchmark with different values. Each shard holds its own map and its own `sync.RWMutex`, so reads can happen in parallel while writes get exclusive access per shard.
+That best case is a floor, not a target. With random keys, two of eight writers landing on the same one of eight shards is not the exception but the rule, and the benchmark at the end of this post has 32 shards beating 8 on the same ten cores.
 
-One detail worth noting: shards are stored as a slice of values (`[]databaseShard`), not a slice of pointers. This keeps them contiguous in memory and avoids an extra indirection on every operation.
+In kvgo, the shard count comes from a config value, defaulting to the number of cores, which keeps it easy to tune and benchmark. On the evidence below that default is too low, and I intend to raise it. Each shard holds its own map and its own `sync.RWMutex`, so reads can happen in parallel while writes get exclusive access per shard.
 
 ```go
 type databaseShard struct {
@@ -94,27 +96,33 @@ The distribution stays close to uniform even with structured key patterns. No sh
 
 Consistent hashing is designed for dynamic clusters. Cassandra and DynamoDB use it so that when a node joins or leaves, only a fraction of keys need to move. In kvgo, the shard count is fixed at startup and nothing joins or leaves at runtime. `hash % n` is simpler and does the job.
 
-This will change when kvgo gets Raft replication and nodes become dynamic. At that point `hash % n` breaks when `n` changes, and a virtual ring with vnodes becomes necessary.
+What would change the answer is splitting the keyspace across several machines that come and go, the way TiKV and CockroachDB split data into ranges. There, `n` changes at runtime and `hash % n` remaps almost every key each time it does, so a ring with vnodes earns its place. That is a distribution problem, not a locking one.
 
 ## The Result
 
-With all of this in place, here is the same benchmark again, this time comparing the single-mutex version against 8 shards:
+With all of this in place, here is the same benchmark again, this time comparing the single-mutex version against 8 and 32 shards:
 
-{{< chart id="compChart" labels="1,2,4,8,16,32,64" x="concurrent workers" y="ops / sec" ymax="6000000" unit="ops/s" >}}
+{{< chart id="compChart" labels="1,2,4,8,16,32,64" x="concurrent workers" y="ops / sec" ymax="4500000" unit="ops/s" >}}
 {
   label: 'single mutex',
-  data: [2399158, 2171374, 2250882, 2239014, 2204556, 2070426, 2145718],
+  data: [2536511, 1847578, 1755190, 1685488, 1680981, 1725182, 1702716],
   borderDash: [6, 3]
 },
 {
   label: '8 shards',
-  data: [2071924, 3178312, 4136862, 4306504, 4963470, 4981994, 5068701]
+  data: [2536789, 2115305, 2084147, 2211046, 2487386, 2934986, 3247284]
+},
+{
+  label: '32 shards',
+  data: [2508151, 2431019, 2234150, 2700516, 3098551, 3601657, 3832942]
 }
 {{< /chart >}}
 
-Sharding works. Throughput scales linearly up to 8 workers, which is both the number of shards and the number of cores on this machine. Past that point the CPU itself becomes the limit, not the locks.
+Sharding works, and it works in the direction the single lock refuses to go: throughput climbs with concurrency instead of collapsing. At 64 workers, 8 shards nearly doubles the single lock, 3.2M against 1.7M ops/sec.
 
-Thanks for reading.
+The gap between 8 and 32 shards is the more interesting one. Take the 8 worker point: 8 shards gives 2.2M ops/sec, 32 shards gives 2.7M on the same hardware, and the gap widens from there. One shard per core sounds like enough, but with random keys it is not. With 8 writers on 8 shards, the odds that no two land on the same shard are about 0.24%. Collisions are the rule, not the exception, and the cure is simply to have more shards than cores.
+
+Thanks for reading :)
 
 ---
 
